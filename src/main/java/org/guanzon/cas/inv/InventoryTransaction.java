@@ -265,9 +265,10 @@ public class InventoryTransaction {
         if(fnQuantity > 0){
             if(loRS.getString("sStockIDx") == null){
                 //If item is not existing and transaction type is not accept delivery, throw an error
-                if(!(InvTransCons.BRANCH_TRANSFER_ACCEPTANCE).toUpperCase().contains(psSourceCD.toUpperCase())){
+                //mac 2026.05.27 include purchase receiving transaction type
+                if(!(InvTransCons.BRANCH_TRANSFER_ACCEPTANCE + "»" +
+                        InvTransCons.PURCHASE_RECEIVING).toUpperCase().contains(psSourceCD.toUpperCase())){
                     throw new GuanzonException(GuanzonException.GE_NOTFOUND_EXCEPTION, "Please create the inventory for the branch!");
-                    //throw new GuanzonException(GuanzonException.GE_HOSTNAME_EXCEPTION);
                 }
             }
             
@@ -583,30 +584,32 @@ public class InventoryTransaction {
             
             //Create the record if it does not exist
             if(!loRS.next()){
-                lsSQL = "INSERT INTO Inv_Master" + 
-                       " SET sBranchCd = " + SQLUtil.toSQL(psBranchCD) +
-                          ", sStockIDx = " + SQLUtil.toSQL(loDetail.psStockIDx) + 
-                          ", sWHouseID = " + SQLUtil.toSQL(loDetail.psWHouseID) +  
-                          ", sIndstCdx = " + SQLUtil.toSQL(loDetail.psIndstCdx) +  
-                          ", sLocatnID = " + SQLUtil.toSQL("") +  
-                          ", sBinNumbr = " + SQLUtil.toSQL("") +  
-                          ", nBegQtyxx = " + SQLUtil.toSQL(0) +  
-                          ", nQtyOnHnd = " + SQLUtil.toSQL(0) +  
-                          ", nLedgerNo = " + SQLUtil.toSQL(0) +  
-                          ", nMinLevel = " + SQLUtil.toSQL(0) +  
-                          ", nMaxLevel = " + SQLUtil.toSQL(0) +  
-                          ", nAvgMonSl = " + SQLUtil.toSQL(0) +  
-                          ", nAvgCostx = " + SQLUtil.toSQL(0) +  
-                          ", cClassify = " + SQLUtil.toSQL("F") +  
-                          ", nBackOrdr = " + SQLUtil.toSQL(0) +  
-                          ", nResvOrdr = " + SQLUtil.toSQL(0) +  
-                          ", nFloatQty = " + SQLUtil.toSQL(0) +  
-                          ", cPrimaryx = " + SQLUtil.toSQL("0") +  
-                          ", cConditnx = " + SQLUtil.toSQL(loDetail.pcConditnx) +  
-                          ", sPayLoadx = " + SQLUtil.toSQL("") +  
-                          ", cRecdStat = " + SQLUtil.toSQL("1") +
-                          ", sModified = " + SQLUtil.toSQL(psUserIDxx) +
-                          ", dModified = " + SQLUtil.toSQL(poDriver.getServerDate());
+                lsSQL = "INSERT INTO Inv_Master SET" + 
+                        "  sBranchCd = " + SQLUtil.toSQL(psBranchCD) +
+                        ", sStockIDx = " + SQLUtil.toSQL(loDetail.psStockIDx) + 
+                        ", sWHouseID = " + SQLUtil.toSQL(loDetail.psWHouseID) +  
+                        ", sIndstCdx = " + SQLUtil.toSQL(loDetail.psIndstCdx) +  
+                        ", sLocatnID = " + SQLUtil.toSQL("") +  
+                        ", sBinNumbr = " + SQLUtil.toSQL("") +  
+                        ", dAcquired = " + SQLUtil.toSQL(pdTranDate) +  
+                        ", dBegInvxx = " + SQLUtil.toSQL(pdTranDate) +  
+                        ", nBegQtyxx = " + SQLUtil.toSQL(0) +  
+                        ", nQtyOnHnd = " + SQLUtil.toSQL(0) +  
+                        ", nLedgerNo = " + SQLUtil.toSQL(0) +  
+                        ", nMinLevel = " + SQLUtil.toSQL(0) +  
+                        ", nMaxLevel = " + SQLUtil.toSQL(0) +  
+                        ", nAvgMonSl = " + SQLUtil.toSQL(0) +  
+                        ", nAvgCostx = " + SQLUtil.toSQL(0) +  
+                        ", cClassify = " + SQLUtil.toSQL("F") +  
+                        ", nBackOrdr = " + SQLUtil.toSQL(0) +  
+                        ", nResvOrdr = " + SQLUtil.toSQL(0) +  
+                        ", nFloatQty = " + SQLUtil.toSQL(0) +  
+                        ", cPrimaryx = " + SQLUtil.toSQL("0") +  
+                        ", cConditnx = " + SQLUtil.toSQL(loDetail.pcConditnx) +  
+                        ", sPayLoadx = " + SQLUtil.toSQL("") +  
+                        ", cRecdStat = " + SQLUtil.toSQL("1") +
+                        ", sModified = " + SQLUtil.toSQL(psUserIDxx) +
+                        ", dModified = " + SQLUtil.toSQL(poDriver.getServerDate());
                         
                 poDriver.executeQuery(lsSQL, "Inv_Master", psBranchCD, "", psIndstCdx);
 
