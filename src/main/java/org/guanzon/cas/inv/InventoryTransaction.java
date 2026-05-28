@@ -685,17 +685,22 @@ public class InventoryTransaction {
             }
 
             //Update Inv_Master
-            lsSQL = "UPDATE Inv_Master" + 
-                   " SET nQtyOnHnd = nQtyOnHnd + " + SQLUtil.toSQL(lnQtyInxxx - lnQtyOutxx) +
-                      ", nBackOrdr = nBackOrdr + " + SQLUtil.toSQL(lnQtyOrder) + 
-                      ", nResvOrdr = nResvOrdr + " + SQLUtil.toSQL(lnQtyIssue) + 
-                      ", nLedgerNo = " + SQLUtil.toSQL(lnLedgerNo) +
-                      ", sModified = " + SQLUtil.toSQL(psUserIDxx) +
-                      ", dModified = " + SQLUtil.toSQL(poDriver.getServerDate()) +
-                   " WHERE sBranchCd = " + SQLUtil.toSQL(psBranchCD) +
-                     " AND sStockIDx = " + SQLUtil.toSQL(loDetail.psStockIDx) +
-                     " AND sIndstCdx = " + SQLUtil.toSQL(loDetail.psIndstCdx) +
-                     " AND cConditnx = " + SQLUtil.toSQL(loDetail.pcConditnx); 
+            lsSQL = "UPDATE Inv_Master SET" + 
+                        "  nQtyOnHnd = nQtyOnHnd + " + SQLUtil.toSQL(lnQtyInxxx - lnQtyOutxx) +
+                        ", nBackOrdr = nBackOrdr + " + SQLUtil.toSQL(lnQtyOrder) + 
+                        ", nResvOrdr = nResvOrdr + " + SQLUtil.toSQL(lnQtyIssue) + 
+                        (lnLedgerNo == 1 && InvTransCons.PURCHASE_RECEIVING.toUpperCase().contains(psSourceCD.toUpperCase()) ? 
+                            ", dAcquired = " + SQLUtil.toSQL(pdTranDate) +
+                            ", dBegInvxx = " + SQLUtil.toSQL(pdTranDate) +
+                            ", nBegQtyxx = " + SQLUtil.toSQL(0) : "") +
+                        ", nLedgerNo = " + SQLUtil.toSQL(lnLedgerNo) +
+                        ", sModified = " + SQLUtil.toSQL(psUserIDxx) +
+                        ", dModified = " + SQLUtil.toSQL(poDriver.getServerDate()) +
+                    " WHERE sBranchCd = " + SQLUtil.toSQL(psBranchCD) +
+                        " AND sStockIDx = " + SQLUtil.toSQL(loDetail.psStockIDx) +
+                        " AND sIndstCdx = " + SQLUtil.toSQL(loDetail.psIndstCdx) +
+                        " AND cConditnx = " + SQLUtil.toSQL(loDetail.pcConditnx); 
+
             System.out.println(lsSQL);
             poDriver.executeQuery(lsSQL, "Inv_Master", psBranchCD, "", psIndstCdx);
 
