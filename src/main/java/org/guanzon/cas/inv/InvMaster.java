@@ -86,11 +86,11 @@ public class InvMaster extends Parameter {
                 return poJSON;
             }
             
-            if (poModel.getDateAcquired() == null) {
-                poJSON.put("result", "error");
-                poJSON.put("message", "Date acquired must have value.");
-                return poJSON;
-            }
+//            if (poModel.getDateAcquired() == null) {
+//                poJSON.put("result", "error");
+//                poJSON.put("message", "Date acquired must have value.");
+//                return poJSON;
+//            }
 
             poModel.setModifyingId(poGRider.Encrypt(poGRider.getUserID()));
             poModel.setModifiedDate(poGRider.getServerDate());
