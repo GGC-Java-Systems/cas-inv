@@ -625,15 +625,15 @@ public class InventoryTransaction {
                     }
 
                     if (loRS.getDate("dBegInvxx") == null){
-                        lsSQL = lsSQL.isEmpty() ? "  " : ", " + "dBegInvxx = " + SQLUtil.toSQL(pdTranDate);
+                        lsSQL = lsSQL.isEmpty() ? "  " : ", " + " dBegInvxx = " + SQLUtil.toSQL(pdTranDate);
                     }
 
                     if (!lsSQL.isEmpty()){
-                        lsSQL = "UPDATE Inv_Master SET" + lsSQL +
-                                " WHERE sBranchCd = " + SQLUtil.toSQL(psBranchCD) +
-                                    " AND sStockIDx = " + SQLUtil.toSQL(loDetail.psStockIDx) +
-                                    " AND sIndstCdx = " + SQLUtil.toSQL(loDetail.psIndstCdx) +
-                                    " AND cConditnx = " + SQLUtil.toSQL(loDetail.pcConditnx);
+                        lsSQL = "UPDATE Inv_Master SET " + lsSQL +
+                                "  WHERE sBranchCd = " + SQLUtil.toSQL(psBranchCD) +
+                                    "  AND sStockIDx = " + SQLUtil.toSQL(loDetail.psStockIDx) +
+                                    "  AND sIndstCdx = " + SQLUtil.toSQL(loDetail.psIndstCdx) +
+                                    "  AND cConditnx = " + SQLUtil.toSQL(loDetail.pcConditnx);
 
                         poDriver.executeQuery(lsSQL, "Inv_Master", psBranchCD, "", psIndstCdx);
                     }
