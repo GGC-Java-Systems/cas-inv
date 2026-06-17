@@ -614,33 +614,35 @@ public class InventoryTransaction {
                 poDriver.executeQuery(lsSQL, "Inv_Master", psBranchCD, "", psIndstCdx);
 
                 lnLedgerNo = 1;
-            } else{
+            } else {
                 lsSQL = "";
-                
-                if((InvTransCons.BRANCH_TRANSFER_ACCEPTANCE + "»" +
-                    InvTransCons.PURCHASE_RECEIVING).toUpperCase().contains(psSourceCD.toUpperCase())){
 
-                    if (loRS.getDate("dAcquired") == null){
-                        lsSQL = "  dAcquired = " + SQLUtil.toSQL(pdTranDate);
+                if ((InvTransCons.BRANCH_TRANSFER_ACCEPTANCE + "»"
+                        + InvTransCons.PURCHASE_RECEIVING).toUpperCase().contains(psSourceCD.toUpperCase())) {
+                    List<String> setClauses = new ArrayList<>();
+
+                    if (loRS.getDate("dAcquired") == null) {
+                        setClauses.add("dAcquired = " + SQLUtil.toSQL(pdTranDate));
+                    }
+                    if (loRS.getDate("dBegInvxx") == null) {
+                        setClauses.add("dBegInvxx = " + SQLUtil.toSQL(pdTranDate));
                     }
 
-                    if (loRS.getDate("dBegInvxx") == null){
-                        lsSQL = lsSQL.isEmpty() ? "  " : ", " + "dBegInvxx = " + SQLUtil.toSQL(pdTranDate);
-                    }
+                    if (!setClauses.isEmpty()) {
+                        lsSQL = "UPDATE Inv_Master SET "
+                                + String.join(", ", setClauses)
+                                + " WHERE sBranchCd = " + SQLUtil.toSQL(psBranchCD)
+                                + "   AND sStockIDx = " + SQLUtil.toSQL(loDetail.psStockIDx)
+                                + "   AND sIndstCdx = " + SQLUtil.toSQL(loDetail.psIndstCdx)
+                                + "   AND cConditnx = " + SQLUtil.toSQL(loDetail.pcConditnx);
 
-                    if (!lsSQL.isEmpty()){
-                        lsSQL = "UPDATE Inv_Master SET" + lsSQL +
-                                " WHERE sBranchCd = " + SQLUtil.toSQL(psBranchCD) +
-                                    " AND sStockIDx = " + SQLUtil.toSQL(loDetail.psStockIDx) +
-                                    " AND sIndstCdx = " + SQLUtil.toSQL(loDetail.psIndstCdx) +
-                                    " AND cConditnx = " + SQLUtil.toSQL(loDetail.pcConditnx);
-
-                        poDriver.executeQuery(lsSQL, "Inv_Master", psBranchCD, "", psIndstCdx);
+                        poDriver.executeQuery(lsSQL, "Inv_Master", psBranchCD, "", loDetail.psIndstCdx); 
                     }
                 }
-                
+
                 lnLedgerNo = loRS.getInt("nLedgerNo") + 1;
             }
+
                 
             //initialize variable to use in determining the type of changes in the stock
             double lnQtyInxxx = 0;

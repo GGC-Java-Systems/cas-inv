@@ -57,44 +57,53 @@ public class InvMaster extends Parameter {
         super.initialize();
     }
 
+    public JSONObject SaveRecord() throws SQLException, GuanzonException, CloneNotSupportedException {
+        JSONObject loJSON = new JSONObject();
+        loJSON = saveRecord();
+        openRecord(getModel().getStockId(), poGRider.getIndustry(), poGRider.getBranchCode());
+        return loJSON;
+    }
+
     @Override
     public JSONObject isEntryOkay() throws SQLException {
         poJSON = new JSONObject();
 
-        if (poGRider.getUserLevel() < UserRight.SYSADMIN) {
+//        new item - sysadmin lang po ito
+//          add item to branch - all system user level
+//          update item branch inventory -> allowed lang na iupdate is location
+//        if (poGRider.getUserLevel() < UserRight.SYSADMIN) {
+//            poJSON.put("result", "error");
+//            poJSON.put("message", "User is not allowed to save record.");
+//            return poJSON;
+//        } else {
+        poJSON = new JSONObject();
+
+        if (poModel.getStockId().isEmpty()) {
             poJSON.put("result", "error");
-            poJSON.put("message", "User is not allowed to save record.");
+            poJSON.put("message", "Item must not be empty.");
             return poJSON;
-        } else {
-            poJSON = new JSONObject();
+        }
 
-            if (poModel.getStockId().isEmpty()) {
-                poJSON.put("result", "error");
-                poJSON.put("message", "Item must not be empty.");
-                return poJSON;
-            }
+        if (poModel.getBranchCode().isEmpty()) {
+            poJSON.put("result", "error");
+            poJSON.put("message", "Branch location must have value.");
+            return poJSON;
+        }
 
-            if (poModel.getBranchCode().isEmpty()) {
-                poJSON.put("result", "error");
-                poJSON.put("message", "Branch location must have value.");
-                return poJSON;
-            }
+        if (poModel.getLocationId() == null || poModel.getLocationId().isEmpty()) {
+            poJSON.put("result", "error");
+            poJSON.put("message", "Location must have value.");
+            return poJSON;
+        }
 
-            if (poModel.getLocationId() == null || poModel.getLocationId().isEmpty()) {
-                poJSON.put("result", "error");
-                poJSON.put("message", "Location must have value.");
-                return poJSON;
-            }
-            
 //            if (poModel.getDateAcquired() == null) {
 //                poJSON.put("result", "error");
 //                poJSON.put("message", "Date acquired must have value.");
 //                return poJSON;
 //            }
-
-            poModel.setModifyingId(poGRider.Encrypt(poGRider.getUserID()));
-            poModel.setModifiedDate(poGRider.getServerDate());
-        }
+        poModel.setModifyingId(poGRider.Encrypt(poGRider.getUserID()));
+        poModel.setModifiedDate(poGRider.getServerDate());
+//        }
 
         poJSON.put("result", "success");
         return poJSON;
@@ -140,7 +149,7 @@ public class InvMaster extends Parameter {
                 byCode ? 0 : 1);
 
         if (poJSON != null) {
-            return poModel.openRecord((String) poJSON.get("sStockIDx"),poGRider.getIndustry(), (String) poJSON.get("xBranchCd"));
+            return poModel.openRecord((String) poJSON.get("sStockIDx"), poGRider.getIndustry(), (String) poJSON.get("xBranchCd"));
         } else {
             poJSON = new JSONObject();
             poJSON.put("result", "error");
@@ -177,7 +186,7 @@ public class InvMaster extends Parameter {
                 byCode ? 0 : 1);
 
         if (poJSON != null) {
-            return poModel.openRecord((String) poJSON.get("sStockIDx"),poGRider.getIndustry(), (String) poJSON.get("xBranchCd"));
+            return poModel.openRecord((String) poJSON.get("sStockIDx"), poGRider.getIndustry(), (String) poJSON.get("xBranchCd"));
         } else {
             poJSON = new JSONObject();
             poJSON.put("result", "error");
@@ -218,7 +227,7 @@ public class InvMaster extends Parameter {
                 byCode ? 0 : 1);
 
         if (poJSON != null) {
-            return poModel.openRecord((String) poJSON.get("sStockIDx"),poGRider.getIndustry(), (String) poJSON.get("xBranchCd"));
+            return poModel.openRecord((String) poJSON.get("sStockIDx"), poGRider.getIndustry(), (String) poJSON.get("xBranchCd"));
         } else {
             poJSON = new JSONObject();
             poJSON.put("result", "error");
@@ -263,7 +272,7 @@ public class InvMaster extends Parameter {
                 byCode ? 0 : 1);
 
         if (poJSON != null) {
-            return poModel.openRecord((String) poJSON.get("sStockIDx"),poGRider.getIndustry(), (String) poJSON.get("xBranchCd"));
+            return poModel.openRecord((String) poJSON.get("sStockIDx"), poGRider.getIndustry(), (String) poJSON.get("xBranchCd"));
         } else {
             poJSON = new JSONObject();
             poJSON.put("result", "error");
@@ -296,7 +305,7 @@ public class InvMaster extends Parameter {
                 byCode ? 0 : 1);
 
         if (poJSON != null) {
-            return poModel.openRecord((String) poJSON.get("sStockIDx"),poGRider.getIndustry(), (String) poJSON.get("xBranchCd"));
+            return poModel.openRecord((String) poJSON.get("sStockIDx"), poGRider.getIndustry(), (String) poJSON.get("xBranchCd"));
         } else {
             poJSON = new JSONObject();
             poJSON.put("result", "error");
@@ -333,7 +342,7 @@ public class InvMaster extends Parameter {
                 byCode ? 0 : 1);
 
         if (poJSON != null) {
-            return poModel.openRecord((String) poJSON.get("sStockIDx"),poGRider.getIndustry(), (String) poJSON.get("xBranchCd"));
+            return poModel.openRecord((String) poJSON.get("sStockIDx"), poGRider.getIndustry(), (String) poJSON.get("xBranchCd"));
         } else {
             poJSON = new JSONObject();
             poJSON.put("result", "error");
@@ -641,6 +650,7 @@ public class InvMaster extends Parameter {
         }
 
         lsSQL = MiscUtil.addCondition(lsSQL, "a.sStockIDx = " + SQLUtil.toSQL(getModel().getStockId()));
+        lsSQL = lsSQL + " ORDER BY  CAST(a.nLedgerNo AS UNSIGNED) ASC ";
         ResultSet loRS = poGRider.executeQuery(lsSQL);
         System.out.println("Load Record list query is " + lsSQL);
 
