@@ -146,6 +146,9 @@ public class InventoryTransaction {
         initTransaction(InvTransCons.IMPOUND_RELEASE, fsSourceNo, fdTransact, fbIsReverse);
     }
     
+    public void InventoryCount(String fsSourceNo, Date fdTransact, boolean fbIsReverse){
+        initTransaction(InvTransCons.INVENTORY_COUNT, fsSourceNo, fdTransact, fbIsReverse);
+    }
     public void PurchaseOrder(String fsSourceNo, Date fdTransact, boolean fbIsReverse){
         initTransaction(InvTransCons.PURCHASE_ORDER, fsSourceNo, fdTransact, fbIsReverse);
     }
@@ -656,7 +659,6 @@ public class InventoryTransaction {
                     //lnQtyInxxx += loDetail.pnQuantity;
                     lnQtyOutxx += loDetail.pnQuantity;
                 } 
-
                 if(InvTransCons.getCreditTrans().toUpperCase().contains(psSourceCD.toUpperCase())){
                     //lnQtyOutxx += loDetail.pnQuantity;
                     lnQtyInxxx += loDetail.pnQuantity;
