@@ -146,8 +146,8 @@ public class InventoryTransaction {
         initTransaction(InvTransCons.IMPOUND_RELEASE, fsSourceNo, fdTransact, fbIsReverse);
     }
     
-    public void InventoryCount(String fsSourceNo, Date fdTransact, boolean fbIsReverse){
-        initTransaction(InvTransCons.INVENTORY_COUNT, fsSourceNo, fdTransact, fbIsReverse);
+    public void InventoryAdjustment(String fsSourceNo, Date fdTransact, boolean fbIsReverse){
+        initTransaction(InvTransCons.INVENTORY_ADJUSTMENT, fsSourceNo, fdTransact, fbIsReverse);
     }
     public void PurchaseOrder(String fsSourceNo, Date fdTransact, boolean fbIsReverse){
         initTransaction(InvTransCons.PURCHASE_ORDER, fsSourceNo, fdTransact, fbIsReverse);
