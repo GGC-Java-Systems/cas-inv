@@ -87,8 +87,7 @@ public class InvTransCons {
                WHOLESALE + ":" + 
                WHOLESALE_REPLACEMENT + ":" + 
                IMPOUND_RELEASE + ":" + 
-               CREDIT_MEMO + ":" +
-               INVENTORY_ADJUSTMENT; 
+               CREDIT_MEMO ; 
     }
     
     //+ Inv_Master->nResvOrdr (nQtyOnHnd) ISSUANCE
