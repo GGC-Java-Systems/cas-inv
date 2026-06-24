@@ -51,6 +51,7 @@ public class InvTransCons {
     public final static String WHOLESALE_REPLACEMENT = "WLRp";
     
     public final static String INVENTORY_STOCK_REQUEST = "InvR";
+    public final static String INVENTORY_ADJUSTMENT = "InvA";
     
     public final static String GCARD_REDEMPTION = "GCRd";             //GCRd 
     
@@ -67,7 +68,9 @@ public class InvTransCons {
                SALES_RETURN + ":" +
                WHOLESALE_RETURN + ":" + 
                IMPOUND + ":" + 
-               DEBIT_MEMO; 
+               DEBIT_MEMO + ":" +
+               INVENTORY_ADJUSTMENT; 
+        
     }
 
     //-Inv_Master->nQtyOnHnd
@@ -84,7 +87,7 @@ public class InvTransCons {
                WHOLESALE + ":" + 
                WHOLESALE_REPLACEMENT + ":" + 
                IMPOUND_RELEASE + ":" + 
-               CREDIT_MEMO; 
+               CREDIT_MEMO ; 
     }
     
     //+ Inv_Master->nResvOrdr (nQtyOnHnd) ISSUANCE

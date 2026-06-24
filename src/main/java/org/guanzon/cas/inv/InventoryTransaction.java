@@ -146,6 +146,9 @@ public class InventoryTransaction {
         initTransaction(InvTransCons.IMPOUND_RELEASE, fsSourceNo, fdTransact, fbIsReverse);
     }
     
+    public void InventoryAdjustment(String fsSourceNo, Date fdTransact, boolean fbIsReverse){
+        initTransaction(InvTransCons.INVENTORY_ADJUSTMENT, fsSourceNo, fdTransact, fbIsReverse);
+    }
     public void PurchaseOrder(String fsSourceNo, Date fdTransact, boolean fbIsReverse){
         initTransaction(InvTransCons.PURCHASE_ORDER, fsSourceNo, fdTransact, fbIsReverse);
     }
@@ -267,7 +270,8 @@ public class InventoryTransaction {
                 //If item is not existing and transaction type is not accept delivery, throw an error
                 //mac 2026.05.27 include purchase receiving transaction type
                 if(!(InvTransCons.BRANCH_TRANSFER_ACCEPTANCE + "»" +
-                        InvTransCons.PURCHASE_RECEIVING).toUpperCase().contains(psSourceCD.toUpperCase())){
+                        InvTransCons.PURCHASE_RECEIVING  + "»" +
+                        InvTransCons.INVENTORY_ADJUSTMENT ).toUpperCase().contains(psSourceCD.toUpperCase())){
                     throw new GuanzonException(GuanzonException.GE_NOTFOUND_EXCEPTION, "Please create the inventory for the branch!");
                 }
             }
@@ -656,7 +660,6 @@ public class InventoryTransaction {
                     //lnQtyInxxx += loDetail.pnQuantity;
                     lnQtyOutxx += loDetail.pnQuantity;
                 } 
-
                 if(InvTransCons.getCreditTrans().toUpperCase().contains(psSourceCD.toUpperCase())){
                     //lnQtyOutxx += loDetail.pnQuantity;
                     lnQtyInxxx += loDetail.pnQuantity;
