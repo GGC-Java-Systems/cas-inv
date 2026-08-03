@@ -281,6 +281,49 @@ public class InvMaster extends Parameter {
         }
     }
 
+    public JSONObject searchRecord(String value, boolean byCode, String industryCode, String brandId, boolean bySupplier) throws SQLException, GuanzonException {
+        String lsSQL = getSQ_Browse();
+
+        if (psIndustryCode != null) {
+            if (!psIndustryCode.isEmpty()) {
+                lsSQL = MiscUtil.addCondition(lsSQL, "a.sIndstCdx = " + SQLUtil.toSQL(psIndustryCode));
+            }
+        }
+
+        if (psCategoryCode != null) {
+            if (!psCategoryCode.isEmpty()) {
+                lsSQL = MiscUtil.addCondition(lsSQL, "a.sCategCd1 = " + SQLUtil.toSQL(psCategoryCode));
+            }
+        }
+
+        if (industryCode != null) {
+            lsSQL = MiscUtil.addCondition(lsSQL, "a.sIndstCdx = " + SQLUtil.toSQL(industryCode));
+        }
+
+        if (brandId != null) {
+            lsSQL = MiscUtil.addCondition(lsSQL, "a.sBrandIDx = " + SQLUtil.toSQL(brandId));
+        }
+        if (!bySupplier) {
+            lsSQL = lsSQL + " GROUP BY a.sStockIDx";
+        }
+        poJSON = ShowDialogFX.Search(poGRider,
+                lsSQL,
+                value,
+                "Barcode»Description»Brand»Model»UOM»QOH",
+                "sBarCodex»sDescript»xBrandNme»xModelNme»xMeasurNm»xQtyOnHnd",
+                "a.sBarCodex»a.sDescript»IFNULL(b.sDescript, '')»IFNULL(c.sDescript, '')»IFNULL(e.sDescript, '')»b.nQtyOnHnd",
+                byCode ? 0 : 1);
+
+        if (poJSON != null) {
+            return poModel.openRecord((String) poJSON.get("sStockIDx"), poGRider.getIndustry(), (String) poJSON.get("xBranchCd"));
+        } else {
+            poJSON = new JSONObject();
+            poJSON.put("result", "error");
+            poJSON.put("message", "No record loaded.");
+            return poJSON;
+        }
+    }
+
     public JSONObject searchRecordOfVariants(String value, boolean byCode) throws SQLException, GuanzonException {
         String lsSQL = getSQ_Browse();
 
