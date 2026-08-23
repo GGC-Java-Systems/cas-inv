@@ -8,6 +8,7 @@ import org.guanzon.cas.inv.model.Model_Inv_Serial;
 import org.guanzon.cas.inv.model.Model_Inv_Serial_Ledger;
 import org.guanzon.cas.inv.model.Model_Inv_Serial_Registration;
 import org.guanzon.cas.inv.model.Model_Inventory;
+import org.guanzon.cas.inv.model.Model_Inventory_Child_Unit;
 import org.guanzon.cas.inv.model.Model_InventorySuperseded;
 import org.guanzon.cas.inv.model.Model_Inventory_Supplier;
 
@@ -195,4 +196,22 @@ public class InvModels {
     private Model_Inv_Serial_Registration poInvSerialReg;
     private Model_Classification_Config poClassificationConfig;
     private Model_Inv_Ledger poInvLedger;
+    private Model_Inventory_Child_Unit poInvChildUnit;
+
+    public Model_Inventory_Child_Unit Inventory_Child_Unit() {
+        if (poGRider == null) {
+            System.err.println("InvModels.Inventory_Child_Unit: Application driver is not set.");
+            return null;
+        }
+
+        if (poInvChildUnit == null) {
+            poInvChildUnit = new Model_Inventory_Child_Unit();
+            poInvChildUnit.setApplicationDriver(poGRider);
+            poInvChildUnit.setXML("Model_Inventory_Child_Unit");
+            poInvChildUnit.setTableName("Inventory_Child_Unit");
+            poInvChildUnit.initialize();
+        }
+
+        return poInvChildUnit;
+    }
 }
