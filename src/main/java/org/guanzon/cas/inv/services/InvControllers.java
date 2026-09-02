@@ -7,6 +7,7 @@ import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.cas.inv.InvMaster;
 import org.guanzon.cas.inv.InvSerial;
 import org.guanzon.cas.inv.Inventory;
+import org.guanzon.cas.inv.InventoryChildUnit;
 
 public class InvControllers {
     public InvControllers(GRiderCAS applicationDriver, LogWrapper logWrapper) {
@@ -73,10 +74,29 @@ public class InvControllers {
     
     
 
+    public InventoryChildUnit InventoryChildUnit() throws SQLException, GuanzonException {
+        if (poGRider == null) {
+            poLogWrapper.severe("InvControllers.InventoryChildUnit: Application driver is not set.");
+            return null;
+        }
+
+        if (poInvChildUnit != null) {
+            return poInvChildUnit;
+        }
+
+        poInvChildUnit = new InventoryChildUnit();
+        poInvChildUnit.setApplicationDriver(poGRider);
+        poInvChildUnit.setWithParentClass(false);
+        poInvChildUnit.setLogWrapper(poLogWrapper);
+        poInvChildUnit.initialize();
+        return poInvChildUnit;
+    }
+
     private final GRiderCAS poGRider;
     private final LogWrapper poLogWrapper;
 
     private Inventory poInventory;
     private InvMaster poInvMaster;
     private InvSerial poInventorySerial;
+    private InventoryChildUnit poInvChildUnit;
 }
