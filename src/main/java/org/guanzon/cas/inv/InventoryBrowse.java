@@ -897,7 +897,6 @@ public class InventoryBrowse {
             lsSQL = MiscUtil.addCondition(lsSQL, " bb.nQtyOnHnd > 0 ");
             lsSQL = MiscUtil.addCondition(lsSQL, " b.sSerial01 IS NULL OR b.cSoldStat = '0' ");
         }
-
         //default
         String lscolHeader = "Serial»Barcode»Description»Qty-On-Hand»Brand Name»Model Name»Color Name»UOM»Variant Name»Model Code";
         String lscolName = "xSerialNme»sBarcodex»xDescript»nQtyOnHnd»xBrandNme»xModelNme»xColorNme»xMeasurNm»xVrntName»xModelCde";
@@ -946,6 +945,71 @@ public class InventoryBrowse {
         return this.poJSON;
     }
 
+    
+    public JSONObject searchInventoryIssaunce(String value, boolean byCode,String lsAddConditon) throws SQLException, GuanzonException {
+        String lsSQL = getSQ_BrowseInventoryIssuance();
+
+        String lsCondition = generateConditionInventory(true);
+        if (!lsCondition.isEmpty()) {
+            lsSQL = MiscUtil.addCondition(lsSQL, lsCondition);
+        }
+
+        if (pbisWithQty) {
+            lsSQL = MiscUtil.addCondition(lsSQL, " bb.nQtyOnHnd > 0 ");
+            lsSQL = MiscUtil.addCondition(lsSQL, " b.sSerial01 IS NULL OR b.cSoldStat = '0' ");
+        }
+        
+        if (!lsAddConditon.isEmpty()){
+            lsSQL = MiscUtil.addCondition(lsSQL, lsAddConditon);
+        }
+        //default
+        String lscolHeader = "Serial»Barcode»Description»Qty-On-Hand»Brand Name»Model Name»Color Name»UOM»Variant Name»Model Code";
+        String lscolName = "xSerialNme»sBarcodex»xDescript»nQtyOnHnd»xBrandNme»xModelNme»xColorNme»xMeasurNm»xVrntName»xModelCde";
+        String lscolCriteria = "xSerialNme»sBarcodex»xDescript»nQtyOnHnd»xBrandNme»xModelNme»xColorNme»xMeasurNm»xVrntName»xModelCde";
+
+        if (!psCustomHeader.isEmpty() && !psCustomName.isEmpty() && !psCustomCriteria.isEmpty()) {
+            lscolHeader = psCustomHeader;
+            lscolName = psCustomName;
+            lscolCriteria = psCustomCriteria;
+        }
+
+        System.out.println("Search Dialog Query : " + lsSQL);
+        this.poJSON = ShowDialogFX.Search(
+                poGRider,
+                lsSQL,
+                value,
+                lscolHeader,
+                lscolName,
+                lscolCriteria,
+                byCode ? 0 : 1
+        );
+        if (this.poJSON != null) {
+            JSONObject result = new JSONObject();
+
+            result = this.poInvMaster.openRecord((String) this.poJSON.get("sStockIDx"), (String) this.poJSON.get("sBranchCd"));
+            if ("error".equals((String) result.get("result"))) {
+                return poJSON;
+            }
+
+            result = this.poInventorySerial.openRecord((String) this.poJSON.get("sSerialID"));
+            if ("error".equals((String) result.get("result"))) {
+                return poJSON;
+            }
+            result = this.poInventory.openRecord((String) this.poJSON.get("sStockIDx"));
+            if ("error".equals((String) result.get("result"))) {
+                return poJSON;
+            }
+
+            this.poJSON.put("result", "success");
+            return poJSON;
+
+        }
+        this.poJSON = new JSONObject();
+        this.poJSON.put("result", "error");
+        this.poJSON.put("message", "No record loaded.");
+        return this.poJSON;
+    }
+    
     public JSONObject searchInventoryIssaunce(String value, boolean byCode, boolean byExact) throws SQLException, GuanzonException {
         String lsSQL = getSQ_BrowseInventoryIssuance();
 
